@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
+<title>App de Clima</title>
+</head>
+<body>
+<h1>App de Clima</h1>
+<input type="text" id="cidade" placeholder="Digite a cidade">
+<button onclick="buscarClima()">Buscar</button>
+<div class="card" id="resultado" style="display:none;">
+<h2 id="nomeCidade"></h2>
+<p id="temperatura"></p>
+<p id="descricao"></p>
+</div>
+<script>
+async function buscarClima() {
+const cidade = encodeURIComponent(document.getElementById("cidade").value);
+
+const apiKey = "08c607e90701f85498aa7e5dcde273ca"; 
+const url =
+`https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`;
+try {
+const response = await fetch(url);
+const data = await response.json();
+console.log(data); 
+if (data.cod !== 200) {
+alert("Erro: " + data.message);
+return;
+}
+const temp = data.main.temp;
+const desc = data.weather[0].description;
+const nome = data.name;
+document.getElementById("resultado").style.display = "block";
+document.getElementById("nomeCidade").innerText = nome;
+document.getElementById("temperatura").innerText = `🌡️ ${temp} °C`;
+document.getElementById("descricao").innerText = `☁️ ${desc}`;
+} catch (erro) {
+
+alert("Erro ao buscar dados!");
+console.error(erro);
+}
+}
+</script>
+</body>
+</html>
