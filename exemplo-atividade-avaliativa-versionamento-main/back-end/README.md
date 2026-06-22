@@ -1,17 +1,33 @@
 # ⚙️ Desenvolvimento Back-end
 
 ## 📝 Descrição do Projeto/Atividade
-[Descreva brevemente o projeto prático que você escolheu colocar aqui. Ex: "Desenvolvimento de uma API RESTful para cadastro de usuários e controle de acessos, com criptografia de senhas (bcrypt) e geração de tokens JWT."]
+O projeto é uma página HTML simples que:
+Busca usuários em https://jsonplaceholder.typicode.com/users
+Renderiza uma lista com user.name
+Ao clicar num item, exibe detalhes com innerHTML (nome, email, phone, website e endereço).
+
 
 ---
 
 ## 🧠 Reflexão de Aprendizado
 
 ### 1. O que aprendi?
-[Substitua este texto por sua resposta. Explique em suas palavras os conceitos de back-end que você aprendeu com esta atividade, tais como: lógica de servidor, rotas HTTP (GET, POST, PUT, DELETE), tratamento de requisições e respostas, uso de middlewares, segurança/criptografia, e integração com banco de dados.]
+O projeto é uma página HTML simples que:
+Busca usuários em https://jsonplaceholder.typicode.com/users
+Renderiza uma lista com user.name
+Ao clicar num item, exibe detalhes com innerHTML (nome, email, phone, website e endereço).
+Código atual (no script.js) funciona, mas tem pontos a melhorar:
+fetch é feito diretamente sem mensagem de “carregando” e sem tratamento de UI para erro.
+innerHTML com template string pode ser arriscado se a origem não for totalmente confiável (melhor usar criação de nós/textContent).
+Falta organizar/definir funções mais robustas e/ou indicar estado (carregando/erro).
 
 ### 2. Para que serve (Por que aprendi)?
-[Substitua este texto por sua resposta. Explique qual o papel da lógica de servidor e das APIs em um ecossistema de software. Por que o desenvolvedor precisa garantir a integridade das regras de negócio e a segurança dos dados no back-end?]
+O projeto é uma página HTML simples que:
+Busca usuários em https://jsonplaceholder.typicode.com/users
+Renderiza uma lista com user.name
+Ao clicar num item, exibe detalhes com innerHTML (nome, email, phone, website e endereço).
+Código atual (no script.js) funciona, mas tem pontos a melhorar:
+fetch é feito diretamente sem mensagem de “carregando” e sem tratamento de UI para erro.
 
 ---
 
@@ -28,18 +44,30 @@
 ### Código Relevante Comentado
 [Insira aqui um trecho de código do servidor ou rotas que foi crucial para a lógica da aplicação, comentando as linhas mais importantes. Exemplo:]
 ```javascript
-// Exemplo de código Express (substitua pelo seu):
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  const user = await database.findUserByEmail(email);
-  
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-    return res.status(401).json({ error: 'Credenciais inválidas' }); // Erro de autenticação
-  }
-  
-  const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
-  return res.json({ token }); // Retorna o token para o cliente
-});
+async function fetchUsers() {
+    const userList = document.getElementById('user-list');
+    const userDetails = document.getElementById('user-details');
+
+    // Estado inicial
+    userList.innerHTML = '';
+    userDetails.textContent = 'Carregando usuários...';
+
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        if (!response.ok) {
+            throw new Error(`Erro HTTP! Status: ${response.status}`);
+        }
+
+        const users = await response.json();
+        displayUsers(users);
+        userDetails.textContent = 'Clique em um nome para ver os detalhes.';
+    } catch (error) {
+        console.error('Erro ao buscar usuários:', error);
+        userDetails.textContent = 'Não foi possível carregar os usuários. Tente novamente mais tarde.';
+    }
+}
+
+
 ```
 
 ### Instruções para Executar
